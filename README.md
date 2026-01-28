@@ -25,7 +25,7 @@ To ensure consistency and avoid ambiguity, all timestamps are normalized to UTC 
 The parsing logic is fully configuration-driven: each timestamp column declares its input format and timezone handling rules directly in the YAML configuration files. This keeps the code simple and the behavior explicit.
 
 
-##Timezone Handling
+## Timezone Handling
 
 Data coming from different geographic regions is handled with a single, clear rule:
 
@@ -35,7 +35,7 @@ Data coming from different geographic regions is handled with a single, clear ru
 
 Both the input format and the timezone strategy (fixed timezone or derived from a column value) are defined in the Silver YAML configuration. This avoids hard-coded logic and makes timezone behavior transparent and reproducible.
 
-##Raw Staging Area
+## Raw Staging Area
 
 A dedicated Raw (staging) layer was introduced to store data exactly as received from the source, without any transformation.
 
@@ -45,7 +45,7 @@ No type casting, parsing, or normalization is performed at this stage.
 This approach prevents early errors or format changes from propagating downstream and guarantees that Bronze and Silver always operate on a stable and reproducible source of truth.
 
 
-##Parametric and Extensible Design
+## Parametric and Extensible Design
 
 The entire pipeline is designed to be fully configuration-driven.
 Adding a new CSV or API source only requires updating the corresponding YAML file.
@@ -55,7 +55,7 @@ Bronze, Silver, and Gold layers are generic and reusable across datasets.
 
 This design significantly speeds up the onboarding of new data sources while keeping the codebase clean and maintainable.
 
-##Validation and Testing (Planned)
+## Validation and Testing (Planned)
 
 I planned to introduce a set of tests focused on configuration quality and consistency.
 At the moment, only an initial draft has been implemented (e.g. validate_raw_config and require_keys) to verify the presence of mandatory configuration keys.
