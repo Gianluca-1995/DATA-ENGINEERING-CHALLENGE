@@ -83,3 +83,27 @@ This was not implemented as part of the challenge, but the current structure ful
 ### Configuration Quality Tests
 
 A dedicated test suite could be added to validate configuration files before execution, ensuring early detection of inconsistencies and reducing runtime failures.
+
+# Power BI Report
+## Power BI Report
+
+A single Power BI report page was built on top of the **Gold layer**, with the goal of validating and showcasing the analytical outputs of the pipeline rather than adding further business logic in the BI layer.  
+The dashboard combines **five complementary visuals**, each highlighting a different perspective of the same underlying data:
+
+- an hourly stacked view of energy production by fuel family to analyze the evolution of the energy mix over time,
+- a bar chart showing the percentage of Renewable energy by region to compare sustainability across regions,
+- a treemap summarizing total production by fuel family,
+- a time-series line chart showing total production trends,
+- a pie chart representing the distribution of total production by region.
+
+Interactive slicers (time range, region, fuel family) allow dynamic exploration of the data while keeping the model simple and performant. 
+
+## Next Steps
+
+Some improvements were intentionally left out of scope for the challenge but can be easily added:
+
+- improve the overall visual design (colors, spacing, consistency, accessibility),
+- import selected Silver tables (e.g. fuel mapping) to enable advanced filters such as Renewable vs Fossil energy,
+- validate the exposed KPIs and aggregations with business stakeholders to confirm correctness and interpretation,
+- add additional contextual KPIs (e.g. peak vs off-peak production, Renewable trend over time),
+- introduce a dedicated date dimension for more advanced time-based analysis.
