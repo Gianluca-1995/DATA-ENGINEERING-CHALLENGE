@@ -1,0 +1,66 @@
+sources:
+  - id: "hourly_fuel_mix"
+    input:
+      - dir: "energy-pipeline/data/silver/"
+        name: "world_generation.parquet"
+      - dir: "energy-pipeline/data/silver/"
+        name: "fuel_mapping.parquet"
+    output:
+      dir: "energy-pipeline/data/gold/"
+      name: "hourly_fuel_mix.parquet"
+      mode: "overwrite"
+    
+    joins:
+      - left: "world_generation"
+        right: "fuel_mapping"
+        how: "left"
+        based_on:
+          fuel_type: "fuel_type"
+
+    aggregation:
+      enabled: true
+      group_by:
+        - "timestamp_utc"
+        - "fuel_family"
+      metrics:
+        - name: "total_generation_mw"
+          column: "generation_mw"
+          agg: "sum"
+          
+
+  - id: "renewable_percentage_by_region"
+    input:
+      - dir: "energy-pipeline/data/silver/"
+        name: "world_generation.parquet"
+      - dir: "energy-pipeline/data/silver/"
+        name: "fuel_mapping.parquet"
+    output:
+      dir: "energy-pipeline/data/gold/"
+      name: "renewable_percentage_by_region.parquet"
+      mode: "overwrite"
+
+    joins:
+      - left: "world_generation"
+        right: "fuel_mapping"
+        how: "left"
+        based_on:
+          fuel_type: "fuel_type"
+
+    aggregation:
+      enabled: true
+      group_by:
+        - "region"
+      metrics:
+        - name: "total_generation"
+          column: "generation_mw"
+          agg: "sum"
+
+        - name: "renewable_generation"
+          column: "generation_mw"
+          agg: "sum"
+          filter:
+            fuel_category: "Renewable"
+
+    post_calculations:
+      - name: "renewable_pct"
+        formula: "renewable_generation / total_generation"

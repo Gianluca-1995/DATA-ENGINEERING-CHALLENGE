@@ -1,0 +1,14 @@
+fuel_type,fuel_family,fuel_category
+Wind,Wind,Renewable
+Wind_Offshore,Wind,Renewable
+Wind_Onshore,Wind,Renewable
+Solar,Solar,Renewable
+Hydro,Hydro,Renewable
+Hydroelectric,Hydro,Renewable
+Nuclear,Nuclear,Renewable
+Natural Gas,Gas,Fossil
+Gas,Gas,Fossil
+Coal,Coal,Fossil
+Oil,Oil,Fossil
+Petroleum,Oil,Fossil
+Other,Other,Fossil

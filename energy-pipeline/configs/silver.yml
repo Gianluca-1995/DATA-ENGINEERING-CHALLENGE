@@ -1,0 +1,146 @@
+sources:
+  - id: "eu_generation"
+    input:
+      dir: "energy-pipeline/data/bronze/"
+      name: "euro_generation.parquet"
+    output:
+      dir: "energy-pipeline/data/silver/"
+      name: "world_generation.parquet"
+      mode: "append"
+      merge_keys : ["source_id", "region", "fuel_type", "timestamp_utc"]
+
+    mappings:
+      - active: true
+        output_column: "source_id"
+        input_column: "Plant_ID"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "region"
+        input_column: "Country_Code"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "fuel_type"
+        input_column: "Fuel_Category"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "generation_mw"
+        input_column: "MW_Output"
+        input_type: "string"
+        output_type: "float"
+
+      - active: true
+        output_column: "timestamp_utc"
+        input_column: "Sensor_Timestamp"
+        input_type: "string"
+        output_type: "datetime_utc"
+        timestamp:
+          input_format: "%Y-%m-%d %H:%M:%S"
+          input_timezone: "CET"
+          output_timezone: "UTC"
+
+    aggregation:
+      enabled: true
+      grain: "H"
+      timestamp_column: "timestamp_utc"
+      group_by:
+        - "region"
+        - "source_id"
+        - "fuel_type"
+        - "timestamp_utc"
+      metrics:
+        - column: "generation_mw"
+          agg: "sum"
+
+    filter:
+      - column: "generation_mw"
+        operator: "is not Null"
+        value: Null
+      - column: "generation_mw"
+        operator: ">="
+        value: 0
+
+  - id: "us_eia_fuel_mix"
+    input:
+      dir: "energy-pipeline/data/bronze/"
+      name: "us_eia_fuel_mix.parquet"
+    output:
+      dir: "energy-pipeline/data/silver/"
+      name: "world_generation.parquet"
+      mode: "append"
+      merge_keys : ["source_id", "region", "fuel_type", "timestamp_utc"]
+
+    mappings:
+      - active: true
+        output_column: "source_id"
+        input_column: "respondent"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "region"
+        input_column: "respondent"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "fuel_type"
+        input_column: "type-name"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "generation_mw"
+        input_column: "value"
+        input_type: "string"
+        output_type: "float"
+
+      - active: true
+        output_column: "timestamp_utc"
+        input_column: "period"
+        input_type: "string"
+        output_type: "datetime_utc"
+        timestamp:
+          input_format: "%Y-%m-%dT%H"
+          input_timezone: "UTC"
+          output_timezone: "UTC"
+
+    aggregation:
+      enabled: false
+
+  - id: "fuel_mapping"
+    input:
+      dir: "energy-pipeline/data/bronze/"
+      name: "fuel_mapping.parquet"
+    output:
+      dir: "energy-pipeline/data/silver/"
+      name: "fuel_mapping.parquet"
+      mode: "overwrite"
+
+    mappings:
+      - active: true
+        output_column: "fuel_type"
+        input_column: "fuel_type"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "fuel_family"
+        input_column: "fuel_family"
+        input_type: "string"
+        output_type: "string"
+
+      - active: true
+        output_column: "fuel_category"
+        input_column: "fuel_category"
+        input_type: "string"
+        output_type: "string"
+
+    # nessuna aggregazione per le dimensioni
+    aggregation:
+      enabled: false

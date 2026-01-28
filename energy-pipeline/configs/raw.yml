@@ -1,0 +1,27 @@
+raw:
+  base_dir: "energy-pipeline/data/raw"
+
+sources:
+  csv:
+    - name: "eu_generation"
+      input_path: "energy-pipeline/data/inputs/euro_generation.csv"
+      output_subdir: "csv"
+      output_filename: "euro_generation.csv"
+
+    - name: "fuel_mapping"
+      input_path: "energy-pipeline/data/inputs/fuel_mapping.csv"
+      output_subdir: "csv"
+      output_filename: "fuel_mapping.csv"
+
+  api:
+    - name: "us_eia"
+      base_url: "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/"
+      api_key_env: "EIA_API_KEY"
+      facets:
+        respondent: ["CISO", "NYIS", "ERCO"]
+      params:
+        frequency: "hourly"
+      data_columns:
+        - value
+      output_subdir: "api"
+      output_filename: "us_eia_fuel_mix.json"

@@ -1,0 +1,75 @@
+sources:
+  - id: "euro_generation"
+    type: "csv"
+    input:
+      dir: "energy-pipeline/data/raw/csv/"
+      name: "euro_generation.csv"
+    output:
+      dir: "energy-pipeline/data/bronze/"
+      name: "euro_generation.parquet"
+      mode: "append"
+      merge_keys: ["Sensor_Timestamp", "Plant_ID", "Country_Code", "Fuel_Category"]
+    columns:
+      - active: true
+        input: "Plant_ID"
+        output: "Plant_ID"
+      - active: true
+        input: "Country_Code"
+        output: "Country_Code"
+      - active: true
+        input: "Sensor_Timestamp"
+        output: "Sensor_Timestamp"
+      - active: true
+        input: "Fuel_Category"
+        output: "Fuel_Category"
+      - active: true
+        input: "MW_Output"
+        output: "MW_Output"
+
+  - id: "us_eia_fuel_mix"
+    type: "json"
+    input:
+      dir: "energy-pipeline/data/raw/api/"
+      name: "us_eia_fuel_mix.json"
+    output:
+      dir: "energy-pipeline/data/bronze/"
+      name: "us_eia_fuel_mix.parquet"
+      mode: "append"
+      merge_keys: ["period", "respondent", "type-name"]
+    columns:
+      - active: true
+        input: "period"
+        output: "period"
+      - active: true
+        input: "respondent"
+        output: "respondent"
+      - active: true
+        input: "type-name"
+        output: "type-name"
+      - active: true
+        input: "value"
+        output: "value"
+      - active: true
+        input: "value-units"
+        output: "value-units"
+
+  - id: "fuel_mapping"
+    type: "csv"
+    input:
+      dir: "energy-pipeline/data/raw/csv/"
+      name: "fuel_mapping.csv"
+    output:
+      dir: "energy-pipeline/data/bronze/"
+      name: "fuel_mapping.parquet"
+      mode: "overwrite"
+      merge_keys: ["raw_fuel_value"]
+    columns:
+      - active: true
+        input: "fuel_type"
+        output: "fuel_type"
+      - active: true
+        input: "fuel_family"
+        output: "fuel_family"
+      - active: true
+        input: "fuel_category"
+        output: "fuel_category"
